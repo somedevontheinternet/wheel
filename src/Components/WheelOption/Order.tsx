@@ -31,7 +31,7 @@ export const Order = ({ optionI, next }: OrderProps) => {
   return (
     <IconButton
       onClick={onClick}
-      disabled={!active || (!next && optionI === 0) || isLastOption}
+      disabled={!active || (!next && optionI === 0) || (isLastOption && next)}
     >
       {!next ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />}
     </IconButton>
