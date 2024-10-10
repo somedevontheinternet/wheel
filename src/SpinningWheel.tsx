@@ -1,13 +1,12 @@
 import { Box, Paper, Typography } from "@mui/material";
 import { RadToDeg, SVGWheel } from "./Components/Wheel/SVGWheel";
 import { useEffect, useState } from "react";
-import { WheelOption, useActiveWheelOptions } from "./redux/slices/wheels";
+import {
+  WheelOption,
+  useCurrentActiveWheelOptions,
+} from "./redux/slices/wheels";
 import { setInfluence, setPrimed, useInfluence } from "./redux/slices/cheat";
 import { useAppDispatch } from "./redux/hooks";
-
-interface SpinningWheelProps {
-  wheelI: number;
-}
 
 const startSpeed = 0.2;
 const startSlow = Math.PI * 4;
@@ -62,9 +61,9 @@ const determineSlice = (targets: WheelTarget[], influence: number[]) => {
   return 0;
 };
 
-export const SpinningWheel = ({ wheelI }: SpinningWheelProps) => {
+export const SpinningWheel = () => {
   const dispatch = useAppDispatch();
-  const options = useActiveWheelOptions(wheelI);
+  const options = useCurrentActiveWheelOptions();
   const targets = createTargetMap(options);
   const [angle, setAngle] = useState(0);
   const [target, setTarget] = useState(0);
@@ -124,7 +123,7 @@ export const SpinningWheel = ({ wheelI }: SpinningWheelProps) => {
     >
       <svg onClick={onSpin} height={"70vh"} viewBox="-110 -110 220 220">
         <g transform={`rotate(${RadToDeg(-angle)})`}>
-          <SVGWheel wheelI={wheelI} selected={currentTargetI} />
+          <SVGWheel selected={currentTargetI} />
         </g>
         <path d="M -90 0 L -100 10 L -100 -10 Z" stroke="black" fill="white" />
       </svg>

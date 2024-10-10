@@ -2,19 +2,14 @@ import { Box, IconButton, TextField } from "@mui/material";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import CheckIcon from "@mui/icons-material/Check";
-import { renameWheel, setCurrentWheel } from "./redux/slices/wheels";
+import { renameCurrentWheel } from "./redux/slices/wheels";
 
 interface WheelTitleEditorProps {
-  wheelI: number;
   name: string;
   onSave: () => void;
 }
 
-export const WheelTitleEditor = ({
-  wheelI,
-  name,
-  onSave,
-}: WheelTitleEditorProps) => {
+export const WheelTitleEditor = ({ name, onSave }: WheelTitleEditorProps) => {
   const [value, setValue] = useState(name);
   const dispatch = useDispatch();
 
@@ -23,13 +18,7 @@ export const WheelTitleEditor = ({
   };
 
   const onClick = () => {
-    dispatch(
-      renameWheel({
-        i: wheelI,
-        name: value,
-      })
-    );
-    dispatch(setCurrentWheel(wheelI));
+    dispatch(renameCurrentWheel(value));
     onSave();
   };
 

@@ -1,20 +1,25 @@
 import { MuiColorInput } from "mui-color-input";
 import { useAppDispatch } from "../../redux/hooks";
-import { updateOption, useWheelOptionColor } from "../../redux/slices/wheels";
+import {
+  updateCurrentWheelOption,
+  useCurrentWheelOptionColor,
+} from "../../redux/slices/wheels";
 import { WithSxProps } from "../WithSxProps";
 
 type ColorProps = WithSxProps<{
-  wheelI: number;
   optionI: number;
 }>;
 
-export const Color = ({ wheelI, optionI, sx }: ColorProps) => {
-  const color = useWheelOptionColor(wheelI, optionI);
+export const Color = ({ optionI, sx }: ColorProps) => {
+  const color = useCurrentWheelOptionColor(optionI);
   const dispatch = useAppDispatch();
 
   const onColorChange = (color: string) =>
     dispatch(
-      updateOption({ wheelI: wheelI, optionI: optionI, option: { color } })
+      updateCurrentWheelOption({
+        optionI: optionI,
+        option: { color },
+      })
     );
 
   return (

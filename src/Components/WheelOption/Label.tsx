@@ -1,21 +1,22 @@
 import { TextField } from "@mui/material";
-import { updateOption, useWheelOptionLabel } from "../../redux/slices/wheels";
+import {
+  updateCurrentWheelOption,
+  useCurrentWheelOptionLabel,
+} from "../../redux/slices/wheels";
 import { useAppDispatch } from "../../redux/hooks";
 import { WithSxProps } from "../WithSxProps";
 
 type NameProps = WithSxProps<{
-  wheelI: number;
   optionI: number;
 }>;
 
-export const Label = ({ wheelI, optionI, sx }: NameProps) => {
-  const label = useWheelOptionLabel(wheelI, optionI);
+export const Label = ({ optionI, sx }: NameProps) => {
+  const label = useCurrentWheelOptionLabel(optionI);
   const dispatch = useAppDispatch();
 
   const onNameChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     dispatch(
-      updateOption({
-        wheelI: wheelI,
+      updateCurrentWheelOption({
         optionI: optionI,
         option: { label: e.target.value },
       })

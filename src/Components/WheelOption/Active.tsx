@@ -3,26 +3,24 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import VisibilityOnIcon from "@mui/icons-material/Visibility";
 import { useAppDispatch } from "../../redux/hooks";
 import {
-  updateOption,
-  useHasFewActiveOptions,
-  useWheelOptionActive,
+  updateCurrentWheelOption,
+  useCurrentWheelHasFewActiveOptions,
+  useCurrentWheelOptionActive,
 } from "../../redux/slices/wheels";
 import { WithSxProps } from "../WithSxProps";
 
 type ActiveProps = WithSxProps<{
-  wheelI: number;
   optionI: number;
 }>;
 
-export const Active = ({ wheelI, optionI, sx }: ActiveProps) => {
-  const active = useWheelOptionActive(wheelI, optionI);
-  const fewOptions = useHasFewActiveOptions(wheelI);
+export const Active = ({ optionI, sx }: ActiveProps) => {
+  const active = useCurrentWheelOptionActive(optionI);
+  const fewOptions = useCurrentWheelHasFewActiveOptions();
   const dispatch = useAppDispatch();
 
   const onClick = () =>
     dispatch(
-      updateOption({
-        wheelI: wheelI,
+      updateCurrentWheelOption({
         optionI: optionI,
         option: { active: !active },
       })
