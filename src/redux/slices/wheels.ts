@@ -38,54 +38,49 @@ const wheelsSlice = createSlice({
       const newWheel = { ...action.payload, id: uuidv4() };
       state.wheels.push(newWheel);
     },
-    renameWheel(state, action: PayloadAction<{ i: number; name: string }>) {
-      const wheel = state.wheels[action.payload.i];
+    renameCurrentWheel(state, action: PayloadAction<string>) {
+      const wheel = state.wheels[state.current];
       if (!wheel) return;
-      wheel.name = action.payload.name;
+      wheel.name = action.payload;
     },
 
-    updateOption(
+    updateCurrentWheelOption(
       state,
       action: PayloadAction<{
-        wheelI: number;
         optionI: number;
         option: Partial<WheelOption>;
       }>
     ) {
-      const wheel = state.wheels[action.payload.wheelI];
+      const wheel = state.wheels[state.current];
       if (!wheel) return;
       const option = wheel.options[action.payload.optionI];
       if (!option) return;
       Object.assign(option, action.payload.option);
     },
-    deleteOption(
-      state,
-      action: PayloadAction<{ wheelI: number; optionI: number }>
-    ) {
-      const wheel = state.wheels[action.payload.wheelI];
+    deleteCurrentWheelOption(state, action: PayloadAction<number>) {
+      const wheel = state.wheels[state.current];
       if (!wheel) return;
-      const option = wheel.options[action.payload.optionI];
+      const option = wheel.options[action.payload];
       if (!option) return;
       wheel.options.splice(wheel.options.indexOf(option), 1);
     },
-    swapOptions(
+    swapCurrentWheelOptions(
       state,
       action: PayloadAction<{
-        wheelI: number;
         optionI: number;
         optionJ: number;
       }>
     ) {
-      const { wheelI, optionI, optionJ } = action.payload;
-      const wheel = state.wheels[wheelI];
+      const { optionI, optionJ } = action.payload;
+      const wheel = state.wheels[state.current];
       if (!wheel) return;
       const optI = wheel.options[optionI];
       const optJ = wheel.options[optionJ];
       [optI.label, optJ.label] = [optJ.label, optI.label];
       [optI.weight, optJ.weight] = [optJ.weight, optI.weight];
     },
-    addWheelOption(state, action: PayloadAction<{ wheelI: number }>) {
-      const wheel = state.wheels[action.payload.wheelI];
+    addCurrentWheelOption(state) {
+      const wheel = state.wheels[state.current];
       if (!wheel) return;
       wheel.options.push({
         label: "New Option",
@@ -94,8 +89,8 @@ const wheelsSlice = createSlice({
         active: true,
       });
     },
-    deleteWheel(state, action: PayloadAction<number>) {
-      state.wheels.splice(action.payload, 1);
+    deleteCurrentWheel(state) {
+      state.wheels.splice(state.current, 1);
       state.current = Math.min(state.current, state.wheels.length - 1);
     },
     uploadWheels(state, action: PayloadAction<WheelsState>) {
@@ -106,13 +101,13 @@ const wheelsSlice = createSlice({
 
 export const {
   addWheel,
-  renameWheel,
-  updateOption,
-  deleteOption,
-  swapOptions,
+  renameCurrentWheel,
+  updateCurrentWheelOption,
+  deleteCurrentWheelOption,
+  swapCurrentWheelOptions,
   setCurrentWheel,
-  addWheelOption,
-  deleteWheel,
+  addCurrentWheelOption,
+  deleteCurrentWheel,
   uploadWheels,
 } = wheelsSlice.actions;
 export const wheelsReducer = wheelsSlice.reducer;
@@ -136,39 +131,59 @@ export const useWheelHeader = () => useAppSelector(selectWheelHeader);
 export const useWheel = (i: number) =>
   useAppSelector((s) => s.wheels.wheels[i]);
 
-export const selectActiveWheelOptions = createSelector(
-  [(s: RootState, wheelI: number) => s.wheels.wheels[wheelI].options],
+export const selectCurrentActiveWheelOptions = createSelector(
+  [(s: RootState) => s.wheels.wheels[s.wheels.current].options],
   (options) => options.filter((o) => o.active)
 );
 
-export const useActiveWheelOptions = (wheelI: number) =>
-  useAppSelector((s) => selectActiveWheelOptions(s, wheelI));
+export const useCurrentActiveWheelOptions = () =>
+  useAppSelector((s) => selectCurrentActiveWheelOptions(s));
 
 export const useWheelOption = (wheelI: number, optionI: number) =>
   useAppSelector((s) => s.wheels.wheels[wheelI].options[optionI]);
 
-export const useWheelOptionActive = (wheelI: number, optionI: number) =>
-  useAppSelector((s) => s.wheels.wheels[wheelI].options[optionI].active);
+export const useCurrentWheelOptionActive = (optionI: number) =>
+  useAppSelector(
+    (s) => s.wheels.wheels[s.wheels.current].options[optionI].active
+  );
 
-export const useWheelOptionColor = (wheelI: number, optionI: number) =>
-  useAppSelector((s) => s.wheels.wheels[wheelI].options[optionI].color);
+export const useCurrentWheelOptionColor = (optionI: number) =>
+  useAppSelector(
+    (s) => s.wheels.wheels[s.wheels.current].options[optionI].color
+  );
 
-export const useWheelOptionLabel = (wheelI: number, optionI: number) =>
-  useAppSelector((s) => s.wheels.wheels[wheelI].options[optionI].label);
+export const useCurrentWheelOptionLabel = (optionI: number) =>
+  useAppSelector(
+    (s) => s.wheels.wheels[s.wheels.current].options[optionI].label
+  );
 
-export const useWheelOptionWeight = (wheelI: number, optionI: number) =>
-  useAppSelector((s) => s.wheels.wheels[wheelI].options[optionI].weight);
+export const useCurrentWheelOptionWeight = (optionI: number) =>
+  useAppSelector(
+    (s) => s.wheels.wheels[s.wheels.current].options[optionI].weight
+  );
 
 export const useWheelOptionCount = (wheelI: number) =>
   useAppSelector((s) => s.wheels.wheels[wheelI].options.length);
 
-export const useHasFewActiveOptions = (wheelI: number) =>
+export const useHasCurrentWheelOption = (optionI: number) =>
   useAppSelector(
-    (s) => s.wheels.wheels[wheelI].options.filter((o) => o.active).length < 3
+    (s) => s.wheels.wheels[s.wheels.current].options.length > optionI
+  );
+
+export const useCurrentWheelHasFewActiveOptions = () =>
+  useAppSelector(
+    (s) =>
+      s.wheels.wheels[s.wheels.current].options.filter((o) => o.active).length <
+      3
   );
 
 export const useHasFewOptions = (wheelI: number) =>
   useAppSelector((s) => s.wheels.wheels[wheelI].options.length < 3);
 
-export const useWheelName = (i: number) =>
-  useAppSelector((s) => s.wheels.wheels[i].name);
+export const useCurrentWheelName = () =>
+  useAppSelector((s) => s.wheels.wheels[s.wheels.current].name);
+
+export const useIsCurrentWheelLastOption = (optionI: number): boolean =>
+  useAppSelector(
+    (s) => s.wheels.wheels[s.wheels.current].options.length - 1 === optionI
+  );

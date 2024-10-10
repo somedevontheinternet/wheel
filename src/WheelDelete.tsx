@@ -1,16 +1,12 @@
 import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useAppDispatch } from "./redux/hooks";
-import { deleteWheel } from "./redux/slices/wheels";
+import { deleteCurrentWheel } from "./redux/slices/wheels";
 
-interface WheelDeleteProps {
-  wheelI: number;
-}
-
-export const WheelDelete = ({ wheelI }: WheelDeleteProps) => {
+export const WheelDelete = () => {
   const dispatch = useAppDispatch();
   return (
-    <IconButton onClick={() => dispatch(deleteWheel(wheelI))}>
+    <IconButton onClick={() => dispatch(deleteCurrentWheel())}>
       <DeleteIcon />
     </IconButton>
   );

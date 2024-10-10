@@ -8,10 +8,9 @@ import { Active } from "./Components/WheelOption/Active";
 import { Order } from "./Components/WheelOption/Order";
 
 interface WheelOptionProps {
-  wheelI: number;
   optionI: number;
 }
-export const WheelOption = ({ wheelI, optionI }: WheelOptionProps) => {
+export const WheelOption = ({ optionI }: WheelOptionProps) => {
   return (
     <Box
       sx={{
@@ -27,16 +26,16 @@ export const WheelOption = ({ wheelI, optionI }: WheelOptionProps) => {
           alignItems: "center",
         }}
       >
-        <Order wheelI={wheelI} optionI={optionI} next={false} />
-        <Label sx={{ width: "100%" }} wheelI={wheelI} optionI={optionI} />
-        <Delete sx={{ ml: 1 }} wheelI={wheelI} optionI={optionI} />
+        <Order optionI={optionI} next={false} />
+        <Label sx={{ width: "100%" }} optionI={optionI} />
+        <Delete sx={{ ml: 1 }} optionI={optionI} />
       </Box>
 
       <Box sx={{ display: "flex", alignItems: "center" }}>
-        <Order wheelI={wheelI} optionI={optionI} next={true} />
-        <Weight wheelI={wheelI} optionI={optionI} />
-        <Color wheelI={wheelI} optionI={optionI} />
-        <Active sx={{ ml: 1 }} wheelI={wheelI} optionI={optionI} />
+        <Order optionI={optionI} next={true} />
+        <Weight optionI={optionI} />
+        <Color optionI={optionI} />
+        <Active sx={{ ml: 1 }} optionI={optionI} />
       </Box>
     </Box>
   );

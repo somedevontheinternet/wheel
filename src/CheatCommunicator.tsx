@@ -2,7 +2,7 @@ import { useContext, useEffect } from "react";
 import { useAppDispatch } from "./redux/hooks";
 import { setInfluence, setPrimed, usePrimed } from "./redux/slices/cheat";
 import { CheatContext } from "./CheatContext";
-import { useActiveWheelOptions, useCurrentWheel } from "./redux/slices/wheels";
+import { useCurrentActiveWheelOptions } from "./redux/slices/wheels";
 import {
   createKeepAliveMessage,
   createPrimeMessage,
@@ -12,8 +12,7 @@ import {
 } from "./Cheat/CheatMessages";
 
 export const CheatCommunicator = () => {
-  const wheelI = useCurrentWheel();
-  const options = useActiveWheelOptions(wheelI);
+  const options = useCurrentActiveWheelOptions();
   const cheat = useContext(CheatContext);
   const dispatch = useAppDispatch();
   const primed = usePrimed();
